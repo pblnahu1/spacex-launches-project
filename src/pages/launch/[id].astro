@@ -1,0 +1,73 @@
+---
+// Acá tendriamos la ID donde estamos intentando navegar
+
+import Layout from "../../layouts/Layout.astro";
+import { getLaunchBy, getLatestLaunches } from "../../services/spacex";
+
+// Si quiero que sea solamente en el servidor, solo lo pongo en false
+export const prerender = false // server
+
+// cookies -> en páginas estáticas (como es el caso de este proyecto) no se puede hacer
+/*
+if(Astro.cookies.get('user')){
+    console.log('user logged')
+    Astro.redirect('/unauthorized')
+    Astro.response({
+        status: 200,
+        headers: {
+            'Content-Type':'application/json',
+        },
+        body: {
+            message: 'usser logged',
+        },
+    })
+}else{
+    console.log('user not logged')
+}
+*/
+
+const { id } = Astro.params;
+
+// if(!id) {  // Solo para el servidor
+//     Astro.redirect("/")
+// }
+
+let launch;
+if (id) {
+  launch = await getLaunchBy({ id });
+}
+
+// Lo siguiente es reemplazado por `output:'server';` en el archivo "astro.config.msj"
+
+/*
+// `getStaticPaths()` function required for dynamic routes.
+export async function getStaticPaths(){
+    // llamar a una API externa
+    // para saber todas las ideas que debes generar
+
+    // Generando dinámicamente este objeto evitando generarno de forma manual
+    const launches = await getLatestLaunches()
+
+    return launches.map(launch => ({
+        // params: { id: '5eb87cd9ffd86e080604b32a' }
+        params: {id: launch.id },
+    }))
+
+    // Esto es correcto cuando antes que el usuario entre a la página, nosotros podamos conocer todo esto...
+
+    // Si yo hago en la terminal `pnpm run build`
+    // me genera todas las páginas a mano una a una, esto es muy rápido y se cargan en mi proyecto. El problema será cuando sean MUCHAS páginas...
+    // Entonces esto es correcto cuando conozco un número finito de páginas.
+}
+*/
+
+console.log(launch);
+---
+
+<Layout title=`Lanzamiento de ${id}`>
+  <article class="flex gap-y-4 flex-col">
+    <img class="w-52 h-auto" src={launch?.links?.patch?.small} alt={launch?.name} />
+    <h2 class="text-4xl text-white font-bold">Launch #{launch?.id}</h2>
+    <p class="text-lg">{launch?.details}</p>
+  </article>
+</Layout>
