@@ -1,11 +1,14 @@
 ---
 // Acá tendriamos la ID donde estamos intentando navegar
 
+import { server } from "typescript";
 import Layout from "../../layouts/Layout.astro";
 import { getLaunchBy, getLatestLaunches } from "../../services/spacex";
 
 // Si quiero que sea solamente en el servidor, solo lo pongo en false
-export const prerender = false // server
+// export const prerender = false // server
+// Si lo quiero poner en producción, solo lo pongo en server
+export const prerender = true;
 
 // cookies -> en páginas estáticas (como es el caso de este proyecto) no se puede hacer
 /*
@@ -39,7 +42,7 @@ if (id) {
 
 // Lo siguiente es reemplazado por `output:'server';` en el archivo "astro.config.msj"
 
-/*
+
 // `getStaticPaths()` function required for dynamic routes.
 export async function getStaticPaths(){
     // llamar a una API externa
@@ -59,7 +62,7 @@ export async function getStaticPaths(){
     // me genera todas las páginas a mano una a una, esto es muy rápido y se cargan en mi proyecto. El problema será cuando sean MUCHAS páginas...
     // Entonces esto es correcto cuando conozco un número finito de páginas.
 }
-*/
+
 
 console.log(launch);
 ---
